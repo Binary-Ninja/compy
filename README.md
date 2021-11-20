@@ -31,11 +31,11 @@ great modularity in design.
 ```python
 from compy import *
 
-ZERO == Nibble(0) # True
-FULL == Nibble(15) # True
+print(ZERO == Nibble(0)) # Output: "True"
+print(FULL == Nibble(15)) # Output: "True"
 ```
-When importing `compy` as a package, the Nibble class and all functions from `functions.py` will be
-exported. Additionally, two Nibbles named `ZERO` and `FULL` are exported with the values `0` and `15`
+When importing `compy` as a package, the nibble class and all functions from `functions.py` will be
+exported. Additionally, two nibbles named `ZERO` and `FULL` are exported with the values `0` and `15`
 respectively.
 
 The backbone of `compy` is the `Nibble` class. A nibble can be created in the following ways.
@@ -83,6 +83,11 @@ print(a < 10) # Equivalent to a <= 10 and a != 10. Output: "False"
 
 print(~a) # Bitwise NOT. Equivalent to 15 - a. Output: "Nibble(0)"
 ```
+Because the nibble class is a subclass of `int`, any methods that are not overloaded in `Nibble` will
+still function the same as they would in `int`. This means that the expression `a + b` and similar will
+return an `int` value that may not be a valid nibble. To avoid this problem, only use methods that have
+been overloaded in `Nibble`.
+### Example
 Here is a simple adder circuit.
 ```python
 def add(a, b):
@@ -100,6 +105,8 @@ This is how simple addition can be accomplished with just comparator logic.
 There is NO Python 2 support.
 
 ## Release History
+- 2.0
+  - MOD: Nibble class is now a subclass of `int`
 - 1.1
   - ADD: `difference`, `increment`, `increment_wrap` functions added to `functions.py`
   - MOD: `>` and `<` operators now perform as expected, instead of comparing like `>=` and `<=`

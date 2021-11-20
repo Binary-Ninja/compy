@@ -1,121 +1,100 @@
 """This file contains the Nibble class."""
 
-from typing import Union, NoReturn
 
-Value = Union["Nibble", int]
-
-
-def get_value(value: Value) -> int:
+def get_value(value: int) -> int:
     """Utility function for validating a given number or Nibble."""
-    if not isinstance(value, (Nibble, int)):
-        raise ValueError("value must be a Nibble or an integer")
-    if isinstance(value, Nibble):
-        return value.value
-    if 0 <= value <= 15:
+    if 0 <= int(value) <= 15:
         return value
     else:
-        raise ValueError("value must be between 0 and 15")
+        raise ValueError("value must be between 0 and 15 (inclusive)")
 
 
-class Nibble:
+class Nibble(int):
     """Nibble class for storing hexadecimal values.
 
     Nibble() -> Nibble(0)
 
-    Nibble(value) -> Nibble(value)
-
-    Nibble(Nibble) -> Nibble(Nibble.value)
+    Nibble(int) -> Nibble(int)
     """
-    def __init__(self, value: Value = 0):
-        self.value = value
+    def __new__(cls, value=0, *args, **kwargs):
+        return super(cls, cls).__new__(cls, get_value(value))
 
     def __repr__(self):
-        return f"Nibble({self.value})"
+        return f"Nibble({self})"
 
-    @property
-    def value(self) -> int:
-        """The value of the Nibble."""
-        return self._value
-
-    @value.setter
-    def value(self, value: Value) -> None:
-        self._value = get_value(value)
-
-    @value.deleter
-    def value(self) -> NoReturn:
-        raise SyntaxError("attribute 'value' of Nibble cannot be deleted")
+    def __str__(self):
+        return f"{int(self)}"
 
     def __bool__(self):
         """All values other than zero are True."""
-        return self.value != 0
+        return super().__bool__()
 
     def zero(self):
         """not bool(self)"""
-        return self.value == 0
+        return not super().__bool__()
 
     def not_zero(self):
         """bool(self)"""
-        return self.value != 0
+        return super().__bool__()
 
     def full(self):
         """self >= 15"""
-        return self.value == 15
+        return self >= 15
 
-    def __eq__(self, other: Value):
+    def __eq__(self, other: int):
         """self >= other and other >= self"""
         return self >= other >= self
 
-    def __ne__(self, other: Value):
+    def __ne__(self, other: int):
         """not (self >= other) or not (other >= self)"""
         return not self == other
 
-    def __gt__(self, other: Value):
+    def __gt__(self, other: int):
         """self >= other and self != other"""
         return self >= other and self != other
 
-    def __lt__(self, other: Value):
+    def __lt__(self, other: int):
         """self <= other and self != other"""
         return self <= other and self != other
 
-    def __ge__(self, other: Value):
+    def __ge__(self, other: int):
         """Perform the same operation as a comparison comparator.
 
         Self is the rear input, other is the side input.
         """
-        return Nibble(0) if get_value(other) > self.value else self
+        return self if super().__ge__(get_value(other)) else Nibble(0)
 
-    def __le__(self, other: Value):
+    def __le__(self, other: int):
         """Perform the same operation as a comparison comparator.
 
         Other is the rear input, self is the side input.
         """
-        return Nibble(other) >= self
+        return other >= self
 
     def __invert__(self):
         """Bitwise NOTs the Nibble.
 
         This is the same as 15 - Nibble.
         """
-        return Nibble(15 - self.value)
+        return Nibble(15 - self)
 
-    def __sub__(self, other: Value):
+    def __sub__(self, other: int):
         """Perform the same operation as a subtraction comparator.
 
         Self is the rear input, other is the side input.
         """
-        return Nibble(max(0, self.value - get_value(other)))
+        return Nibble(max(0, super().__sub__(get_value(other))))
 
-    def __rsub__(self, other: Value):
+    def __rsub__(self, other: int):
         """Perform the same operation as a subtraction comparator.
 
         Other is the rear input, self is the side input.
         """
-        return Nibble(max(0, get_value(other) - self.value))
+        return Nibble(max(0, super().__rsub__(get_value(other))))
 
-    def __isub__(self, other: Value):
+    def __isub__(self, other: int):
         """Perform the same operation as a subtraction comparator.
 
         Self is the rear input, other is the side input.
         """
-        self.value = self - other
-        return self
+        return self - other

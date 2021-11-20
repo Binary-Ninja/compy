@@ -28,10 +28,11 @@ def add(a, b):
 
 
 def main():
-    a = Nibble(int(input("First value? ")))
-    b = Nibble(int(input("Second value? ")))
+    a = Nibble(input("First value? "))
+    b = Nibble(input("Second value? "))
+    a + b
     result = add(a, b)
-    print(f"{bool(result[0]) * 16 + result[1].value}: ({bool(result[0])}, {result[1].value})")
+    print(f"{bool(result[0]) * 16 + result[1]}: ({bool(result[0])}, {result[1]})")
 
 
 if __name__ == "__main__":

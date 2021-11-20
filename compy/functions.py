@@ -1,7 +1,6 @@
 """This file contains functions using comparator logic."""
 
-from typing import Iterable
-from nibble import Nibble, Value, get_value
+from nibble import Nibble
 
 __all__ = [
     "maximum",
@@ -14,39 +13,39 @@ __all__ = [
 ]
 
 
-def maximum(*values: Iterable[Value]):
+def maximum(*values: int):
     """Return the highest value given."""
-    return Nibble(max(*values, key=get_value))
+    return Nibble(max(*values))
 
 
-def minimum(a: Value, b: Value):
+def minimum(a: int, b: int):
     """Given two values, return the minimum."""
     return ~maximum(~Nibble(a), ~Nibble(b))
 
 
-def subtract(rear: Value = 0, side_a: Value = 0, side_b: Value = 0):
+def subtract(rear: int = 0, side_a: int = 0, side_b: int = 0):
     """Perform the same operation as a subtraction comparator."""
-    return rear - maximum(side_a, side_b)
+    return Nibble(rear) - maximum(side_a, side_b)
 
 
-def compare(rear: Value = 0, side_a: Value = 0, side_b: Value = 0):
+def compare(rear: int = 0, side_a: int = 0, side_b: int = 0):
     """Perform the same operation as a comparison comparator."""
-    return rear >= minimum(side_a, side_b)
+    return Nibble(rear) >= minimum(side_a, side_b)
 
 
-def difference(a: Value, b: Value):
+def difference(a: int, b: int):
     """Return the difference between the values."""
     m = maximum(a, b)
     return maximum(m - a, m - b)
 
 
-def increment(a: Value):
+def increment(a: int):
     """Adds one to the value. 15 + 1 = 15"""
-    return ~(14 - a)
+    return ~(14 - Nibble(a))
 
 
-def increment_wrap(a: Value):
+def increment_wrap(a: int):
     """Adds one to the value. 15 + 1 = 0"""
-    if a == 15:
+    if a >= 15:
         return Nibble(0)
     return increment(a)
