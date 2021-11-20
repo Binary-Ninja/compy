@@ -23,16 +23,15 @@ def add(a, b):
     Takes in two values.
     Returns a tuple of (carry, result).
     """
-    a, b = Nibble(a), Nibble(b)  # Convert to Nibbles.
     a1, a2 = add1(a, b), add2(a, b)  # Calculate the intermediate steps.
     return (FULL, a2 - 1) if carry(a1, a2) else (ZERO, a1)  # Final logic.
 
 
 def main():
-    a = int(input("First value? "))
-    b = int(input("Second value? "))
+    a = Nibble(int(input("First value? ")))
+    b = Nibble(int(input("Second value? ")))
     result = add(a, b)
-    print(f"Result: {result[1].value} with a carry of {1 if result[0] else 0}.")
+    print(f"{bool(result[0]) * 16 + result[1].value}: ({bool(result[0])}, {result[1].value})")
 
 
 if __name__ == "__main__":

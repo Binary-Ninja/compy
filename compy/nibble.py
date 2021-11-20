@@ -50,52 +50,46 @@ class Nibble:
         return self.value != 0
 
     def zero(self):
-        """Equivalent to 'not bool(self)'."""
+        """not bool(self)"""
         return self.value == 0
 
     def not_zero(self):
-        """Equivalent to 'bool(self)'."""
+        """bool(self)"""
         return self.value != 0
 
     def full(self):
-        """Equivalent to 'self > 15'."""
+        """self >= 15"""
         return self.value == 15
 
     def __eq__(self, other: Value):
-        """Equivalent to 'self > other and other > self'."""
-        return self > other > self
+        """self >= other and other >= self"""
+        return self >= other >= self
 
     def __ne__(self, other: Value):
-        """Equivalent to 'not (self > other) or not (other > self)'."""
+        """not (self >= other) or not (other >= self)"""
         return not self == other
 
     def __gt__(self, other: Value):
-        """Perform the same operation as a comparison comparator.
-
-        Self is the rear input, other is the side input.
-        """
-        return Nibble() if get_value(other) > self.value else self
+        """self >= other and self != other"""
+        return self >= other and self != other
 
     def __lt__(self, other: Value):
-        """Perform the same operation as a comparison comparator.
-
-        Other is the rear input, self is the side input.
-        """
-        return Nibble(other) > self
+        """self <= other and self != other"""
+        return self <= other and self != other
 
     def __ge__(self, other: Value):
         """Perform the same operation as a comparison comparator.
 
         Self is the rear input, other is the side input.
         """
-        return self > other
+        return Nibble(0) if get_value(other) > self.value else self
 
     def __le__(self, other: Value):
         """Perform the same operation as a comparison comparator.
 
         Other is the rear input, self is the side input.
         """
-        return self < other
+        return Nibble(other) >= self
 
     def __invert__(self):
         """Bitwise NOTs the Nibble.

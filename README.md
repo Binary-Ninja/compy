@@ -3,9 +3,9 @@ A python library for working with combinational logic for Minecraft's redstone c
 
 The standard for computing in Minecraft is with binary logic. However, by utilizing redstone signal
 strength, analog hexadecimal computers are possible. These are a very different flavor from their binary
-cousins, and hexadecimal circuits can be extremely compact and fast in comparison. However, it can be more
-difficult to create complex logic circuits and keep track of all the signals. `compy` was designed to make
-hexadecimal computing easier by smoothing the design process of hexadecimal circuits.
+cousins, and hexadecimal circuits can be extremely compact and fast in comparison. However, it can be
+more difficult to create complex logic circuits and keep track of all the signals. `compy` was designed
+to make hexadecimal computing easier by smoothing the design process of hexadecimal circuits.
 
 ## Installation
 `compy` is designed to be a playground package, so it is recommended to install from source. Just clone
@@ -20,49 +20,97 @@ python compy
 ```
 Depending on your system, you may need to replace `python` with `python3` when executing this way.
 
-Inside the package itself there are two main modules, `nibble.py` and `functions.py`. `nibble.py` contains
-the class that represents a single hexadecimal digit. This class has some basic functionality. Read the
-included documentation strings to figure out what it can do. `functions.py` is for more advanced circuits
-wrapped into functions, so they can be reused. Everything in the modules is carefully designed to be
-possible with redstone. The more complex circuits can be broken down into smaller steps, allowing great
-modularity in design.
+Inside the package itself there are two main modules, `nibble.py` and `functions.py`. `nibble.py`
+contains the class that represents a single hexadecimal digit. This class has some basic functionality.
+Read the included documentation strings to figure out what it can do. `functions.py` is for more advanced
+circuits wrapped into functions, so they can be reused. Everything in the modules is carefully designed
+to be possible with redstone. The more complex circuits can be broken down into smaller steps, allowing
+great modularity in design.
 
-### Examples
-Let's create a simple circuit that adds two Nibbles.
+### Tutorial
+```python
+from compy import *
+
+ZERO == Nibble(0) # True
+FULL == Nibble(15) # True
+```
+When importing `compy` as a package, the Nibble class and all functions from `functions.py` will be
+exported. Additionally, two Nibbles named `ZERO` and `FULL` are exported with the values `0` and `15`
+respectively.
+
+The backbone of `compy` is the `Nibble` class. A nibble can be created in the following ways.
+```python
+from compy import *
+
+a = Nibble() # Default value is zero.
+b = Nibble(5) # Create Nibble with signal strength 5.
+c = Nibble(b) # Create Nibble with value of another Nibble.
+print(c) # Output: "Nibble(5)"
+```
+Nibbles can be compared and subtracted according to comparator rules.
+```python
+from compy import *
+
+a = Nibble(10)
+b = Nibble(15)
+print(b - a) # Comparator subtract. The left operand is the rear input. Output: "Nibble(5)"
+print(b >= a) # Comparator comparison. The left operand is the rear input. Output: "Nibble(15)"
+print(b <= a) # Equivalent to a >= b. Output: "Nibble(0)"
+```
+Nibbles also support in-place subtraction with the `-=` operator.
+
+The `>=` operator performs a rich comparison, returning a nibble value.
+If `a` is larger than `b`, the expression will return `Nibble(0)`, otherwise it will return `Nibble(b)`.
+
+To simulate comparators with three inputs, use the `compare` and `subtract` functions in `functions.py`.
+
+Nibbles have more convenience functions built in.
+```python
+from compy import *
+
+a = Nibble(15)
+
+print(bool(a)) # All non-zero Nibbles are considered truthy. Output: "True"
+print(a.not_zero()) # Same as "bool(a)". Output: "True"
+print(a.zero()) # Same as "not bool(a)". Output: "False"
+print(a.full()) # True if a == 15. Equivalent to a >= 15. Output: "True"
+
+print(a == 10) # Equivalent to a >= 10 and 10 >= a. Output: "False"
+print(a != 10) # Equivalent to not (a >= 10) or not (10 >= a). Output: True""
+
+print(a > 10) # Equivalent to a >= 10 and a != 10. Output: "True"
+print(a < 10) # Equivalent to a <= 10 and a != 10. Output: "False"
+
+print(~a) # Bitwise NOT. Equivalent to 15 - a. Output: "Nibble(0)"
+```
+Here is a simple adder circuit.
 ```python
 def add(a, b):
     return ~(~a - b)
 ```
-This simple adder function will return a Nibble with a value of `a + b` if `a + b` is less than 15.
-If the result is over 15, the function will just return 15 regardless.
+This circuit will take in two nibbles and output the sum. If the result is too large to fit into one
+nibble, then the max nibble of 15 is returned.
 
-The `-` operator will perform a comparator subtraction, with the Nibble on the left assumed to be the
-rear input, and the Nibble on the right assumed to be the side input. For three input subtraction, use the
-`subtract` function in the `functions` module.
-
-The `~` operator is a bitwise NOT, which is the same as `15 - Nibble`.
-
-This means the circuit above can
-also be represented as `15 - (15 - a - b)`. Simplifying this mathematically gets us `15 - 15 + a + b`, or
-`a + b`. This is how addition is possible by only using subtraction.
-
-The use of operator overloading provides a clean, understandable syntax in just a few characters.
-This is not an exhaustive reference; both modules have more functionality than shown or discussed here.
-Download the library for yourself to add new functions and create complex circuits!
+Because the NOT operator is equivalent to 15 - nibble, this circuit can be simplified mathematically to
+`15 - (15 - a - b)`. This can be expanded to `15 - 15 + a + b`, which can be simplified to `a + b`.
+This is how simple addition can be accomplished with just comparator logic.
 
 ## Development
 `compy` was developed in Python 3.9.7 and may not work on earlier versions of Python.
 There is NO Python 2 support.
 
 ## Release History
+- 1.1
+  - ADD: `difference`, `increment`, `increment_wrap` functions added to `functions.py`
+  - MOD: `>` and `<` operators now perform as expected, instead of comparing like `>=` and `<=`
 - 1.0
   - First version
 
 ## License
 `compy` is distributed under the GNU Lesser General Public License.
 
-This means that you can use the code however you want, but if you publish a modified version of this code,
-the code must be open source.
+This means that you can use the code however you want, but if you publish a modified version of this
+code, the code must be open source.
 
     compy - A library for working with combinational logic for Minecraft's redstone comparators.
     Copyright (C) 2021  https://github.com/Binary-Ninja
