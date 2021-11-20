@@ -119,7 +119,7 @@ There is NO Python 2 support.
 This means that you can use the code however you want, but if you publish a modified version of this
 code, the code must be open source.
 
-    compy - A library for working with combinational logic for Minecraft's redstone comparators.
+    compy - A python library for working with combinational logic for Minecraft's redstone comparators.
     Copyright (C) 2021  https://github.com/Binary-Ninja
 
     This library is free software; you can redistribute it and/or
